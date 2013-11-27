@@ -81,15 +81,15 @@ class ConfigListener extends AbstractListener implements
      */
     public function attach(EventManagerInterface $events)
     {
-        $this->callbacks[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULES, array($this, 'onloadModulesPre'), 1000);
+        $this->callbacks[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULES, array($this, 'onloadModulesPre'), 1000);	// ** 为ModuleEvent设置配置监听器
 
         if ($this->skipConfig) {
             // We already have the config from cache, no need to collect or merge.
             return $this;
         }
 
-        $this->callbacks[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULE, array($this, 'onLoadModule'));
-        $this->callbacks[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULES, array($this, 'onLoadModulesPost'), -1000);
+        $this->callbacks[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULE, array($this, 'onLoadModule'));		// ** 保存不同模块的配置文件
+        $this->callbacks[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULES, array($this, 'onLoadModulesPost'), -1000);	// ** 合并模块配置文件
 
         return $this;
     }
@@ -321,7 +321,7 @@ class ConfigListener extends AbstractListener implements
             );
         }
 
-        $this->configs[$key] = $config;
+        $this->configs[$key] = $config;		// 保存配置信息,路径=》配置数组
 
         return $this;
     }

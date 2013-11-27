@@ -61,5 +61,15 @@ return array(
 
    // Initial configuration with which to seed the ServiceManager.
    // Should be compatible with Zend\ServiceManager\Config.
-   // 'service_manager' => array(),
+// 	'service_manager' => array(
+// 			'invokables'=> array(),
+// 			'factories'=> array(
+// 				'EventManager'  => 'Zend\Mvc\Service\EventManagerFactory',
+// 			),
+// 			'abstract_factories'=> array(),
+// 			'aliases'=> array(
+// 				'Zend\ServiceManager\ServiceLocatorInterface'=>'ServiceManager',
+// 			),
+// 			'shared'=> array()
+// 	),
 );

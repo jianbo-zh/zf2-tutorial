@@ -141,7 +141,7 @@ class Application implements
         $listeners = array_unique(array_merge($this->defaultListeners, $listeners));
 
         foreach ($listeners as $listener) {
-            $events->attach($serviceManager->get($listener));
+            $events->attach($serviceManager->get($listener));		// **绑定默认监听器
         }
 
         // Setup MVC Event
@@ -153,7 +153,7 @@ class Application implements
               ->setRouter($serviceManager->get('Router'));
 
         // Trigger bootstrap events
-        $events->trigger(MvcEvent::EVENT_BOOTSTRAP, $event);
+        $events->trigger(MvcEvent::EVENT_BOOTSTRAP, $event);	// ** 触发bootstrap事件
         return $this;
     }
 
@@ -250,8 +250,12 @@ class Application implements
         $listeners = isset($configuration['listeners']) ? $configuration['listeners'] : array();
         $serviceManager = new ServiceManager(new Service\ServiceManagerConfig($smConfig));
         $serviceManager->setService('ApplicationConfig', $configuration);
-        $serviceManager->get('ModuleManager')->loadModules();
-        return $serviceManager->get('Application')->bootstrap($listeners);
+        $serviceManager->get('ModuleManager')->loadModules();		// **触发创建模块
+        
+        $application = $serviceManager->get('Application');		// **创建应用程序，请求（request）和回复（response）
+        
+        return $application->bootstrap($listeners);
+        
     }
 
     /**
@@ -287,7 +291,7 @@ class Application implements
         };
 
         // Trigger route event
-        $result = $events->trigger(MvcEvent::EVENT_ROUTE, $event, $shortCircuit);
+        $result = $events->trigger(MvcEvent::EVENT_ROUTE, $event, $shortCircuit);		// 触发路由事件
         if ($result->stopped()) {
             $response = $result->last();
             if ($response instanceof ResponseInterface) {

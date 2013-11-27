@@ -43,19 +43,19 @@ class DefaultListenerAggregate extends AbstractListener implements
         $locatorRegistrationListener = new LocatorRegistrationListener($options);
 
         // High priority, we assume module autoloading (for FooNamespace\Module classes) should be available before anything else
-        $this->listeners[] = $events->attach(new ModuleLoaderListener($options));
-        $this->listeners[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULE_RESOLVE, new ModuleResolverListener);
+        $this->listeners[] = $events->attach(new ModuleLoaderListener($options));	// **绑定 模块类自动加载
+        $this->listeners[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULE_RESOLVE, new ModuleResolverListener);	// **绑定　创建一个模块对象
         // High priority, because most other loadModule listeners will assume the module's classes are available via autoloading
-        $this->listeners[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULE, new AutoloaderListener($options), 9000);
+        $this->listeners[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULE, new AutoloaderListener($options), 9000); // **绑定　自动加载模块的自动加载配置
 
         if ($options->getCheckDependencies()) {
             $this->listeners[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULE, new ModuleDependencyCheckerListener, 8000);
         }
 
-        $this->listeners[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULE, new InitTrigger($options));
-        $this->listeners[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULE, new OnBootstrapListener($options));
-        $this->listeners[] = $events->attach($locatorRegistrationListener);
-        $this->listeners[] = $events->attach($configListener);
+        $this->listeners[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULE, new InitTrigger($options));	// ** 绑定 模块的 init初始化
+        $this->listeners[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULE, new OnBootstrapListener($options));	// 程序引导bootstrap时，调用模块的bootstrap
+        $this->listeners[] = $events->attach($locatorRegistrationListener);		// ** 创建模块别名，和设置模块服务实例（服务管理器）
+        $this->listeners[] = $events->attach($configListener);		// **　绑定和处理模块的配置文件
         return $this;
     }
 
